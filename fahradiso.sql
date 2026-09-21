@@ -1,3 +1,28 @@
+-- =====================================================================
+-- Fahrradverleih: Tabellenstruktur
+-- Wird von setup.php ausgefuehrt. Kann beliebig oft ausgefuehrt werden,
+-- da alle Tabellen vorher geloescht werden (in umgekehrter Abhaengigkeit).
+-- =====================================================================
+
+SET FOREIGN_KEY_CHECKS = 0;
+
+DROP TABLE IF EXISTS Ihsan_Teilnahme;
+DROP TABLE IF EXISTS Ihsan_Termin;
+DROP TABLE IF EXISTS Ihsan_Tour;
+DROP TABLE IF EXISTS Ihsan_Schwierigkeitsgrad;
+DROP TABLE IF EXISTS Ihsan_Ausleihe_Zubehoer;
+DROP TABLE IF EXISTS Ihsan_Sonderzubehoer;
+DROP TABLE IF EXISTS Ihsan_Ausleihe;
+DROP TABLE IF EXISTS Ihsan_Fahrrad;
+DROP TABLE IF EXISTS Ihsan_Preisgruppe;
+DROP TABLE IF EXISTS Ihsan_Kunde;
+
+SET FOREIGN_KEY_CHECKS = 1;
+
+-- ---------------------------------------------------------------------
+-- Verleih
+-- ---------------------------------------------------------------------
+
 CREATE TABLE Ihsan_Kunde (
     Kundennummer   INT UNSIGNED     NOT NULL AUTO_INCREMENT,
     Anrede         VARCHAR(10)      NOT NULL,
