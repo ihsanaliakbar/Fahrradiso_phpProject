@@ -4,11 +4,11 @@
 -- Die Tabellen sind zu diesem Zeitpunkt frisch angelegt und leer.
 -- =====================================================================
 
-INSERT INTO Ihsan_Preisgruppe (PreisgruppenNr, Bezeichnung, Tagespreis) VALUES
-    (1, 'Deluxe',   25.00),
-    (2, 'gehoben',  18.00),
-    (3, 'Standard', 12.00),
-    (4, 'Robust',    8.00);
+INSERT INTO Ihsan_Preisgruppe (PreisgruppenNr, Bezeichnung, Tagespreis, Kaution) VALUES
+    (1, 'Deluxe',   25.00, 200.00),
+    (2, 'gehoben',  18.00, 100.00),
+    (3, 'Standard', 12.00,  50.00),
+    (4, 'Robust',    8.00,  30.00);
 
 INSERT INTO Ihsan_Fahrrad (Art, Hersteller, Modell, Rahmengroesse, Anschaffungspreis, Anschaffungsdatum, LetzteWartung, PreisgruppenNr) VALUES
     ('Trekkingrad',  'Kalkhoff',       'Endeavour',  'M', 1299.00, '2023-03-15', '2025-04-10', 2),
@@ -38,7 +38,7 @@ INSERT INTO Ihsan_Sonderzubehoer (Bezeichnung, Preis) VALUES
 INSERT INTO Ihsan_Ausleihe (Kundennummer, Fahrradnummer, Ausleihdatum, Rueckgabedatum, Versicherung, Kaution) VALUES
     (1, 1, '2025-08-02', '2025-08-04', TRUE,  100.00),
     (2, 5, '2025-09-13', '2025-09-14', FALSE, 200.00),
-    (3, 3, '2025-10-31', '2025-11-03', TRUE,   80.00);
+    (3, 3, '2025-10-31', '2025-11-03', TRUE,   50.00);
 
 INSERT INTO Ihsan_Ausleihe_Zubehoer (AusleihNr, ZubehoerNr) VALUES
     (1, 1),

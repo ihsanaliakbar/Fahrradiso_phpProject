@@ -35,10 +35,12 @@ CREATE TABLE Ihsan_Kunde (
     PRIMARY KEY (Kundennummer)
 );
 
+-- Kaution: fester Betrag je Preisgruppe, wird bei der Ausleihe je Rad hinterlegt
 CREATE TABLE Ihsan_Preisgruppe (
     PreisgruppenNr TINYINT UNSIGNED NOT NULL,
     Bezeichnung    VARCHAR(20)      NOT NULL,
     Tagespreis     DECIMAL(6,2)     NOT NULL,
+    Kaution        DECIMAL(6,2)     NOT NULL,
     PRIMARY KEY (PreisgruppenNr)
 );
 

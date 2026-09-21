@@ -59,6 +59,7 @@ function h(?string $s): string
     </style>
 </head>
 <body>
+    <nav><a href="index.php">Fahrräder nach Modell</a> | <a href="verleih.php">Neue Ausleihe</a></nav>
     <h1>Fahrräder nach Modell</h1>
 
     <form method="get">

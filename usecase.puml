@@ -1,0 +1,38 @@
+@startuml usecase
+' Use-Case-Diagramm Fahrradverleih Fahradiso: Fahrräder ausleihen (Teil B)
+skinparam packageStyle rectangle
+skinparam actorStyle awesome
+skinparam usecase {
+    BackgroundColor #F8F8F8
+    BorderColor #555555
+}
+
+actor "Mitarbeiter" as ma
+
+rectangle "Fahrradverleih Fahradiso" {
+    usecase "Versicherung\nabschließen" as UC6
+    usecase "Sonderzubehör\nmitmieten" as UC5
+    usecase "Neuen Kunden\nanlegen" as UC4
+
+    usecase "Fahrräder ausleihen" as UC1
+
+    usecase "Verfügbarkeit im\nZeitraum prüfen" as UC2
+    usecase "Mietpreis berechnen" as UC3
+}
+
+actor "Kunde" as kunde
+
+' Akteure links und rechts (Linien ohne Pfeilspitze)
+ma -right- UC1
+UC1 -right- kunde
+
+' Optionale Erweiterungen oberhalb
+UC6 .down.> UC1 : <<extend>>
+UC5 .down.> UC1 : <<extend>>
+UC4 .down.> UC1 : <<extend>>
+
+' Pflichtbestandteile unterhalb
+UC1 .down.> UC2 : <<include>>
+UC1 .down.> UC3 : <<include>>
+
+@enduml
