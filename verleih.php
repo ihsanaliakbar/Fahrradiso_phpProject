@@ -52,6 +52,8 @@ if (!$dVon || !$dBis) {
 }
 $tage = (!$fehler) ? $dVon->diff($dBis)->days + 1 : 0;   // 30.10.–02.11. = 4 Tage
 
+const VERSICHERUNG_PREIS = 5.00;   // je Fahrrad, wenn Versicherung gewählt
+
 // ---------------------------------------------------------------------
 // Schritt 2: Verfügbare Fahrräder im Zeitraum
 // Ein Rad ist belegt, wenn eine Ausleihe den Zeitraum überlappt.
@@ -163,6 +165,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !$fehler) {
             $preis = $tage * (float)$zubehoerNachNr[$z]['Preis'];
             $positionen[] = [
                 'text'    => "Zubehör: {$zubehoerNachNr[$z]['Bezeichnung']}, $tage Tage × " . euro((float)$zubehoerNachNr[$z]['Preis']),
+                'betrag'  => $preis,
+                'kaution' => null,
+            ];
+            $summe += $preis;
+        }
+        if ($versicherung) {
+            $anzahl = count($gewaehlteRaeder);
+            $preis  = $anzahl * VERSICHERUNG_PREIS;
+            $positionen[] = [
+                'text'    => "Versicherung: $anzahl × " . euro(VERSICHERUNG_PREIS) . ' je Fahrrad',
                 'betrag'  => $preis,
                 'kaution' => null,
             ];
@@ -310,7 +322,7 @@ $mysqli->close();
                 <legend>5. Versicherung</legend>
                 <div class="zeile">
                     <input type="checkbox" name="versicherung" id="versicherung" <?= isset($_POST['versicherung']) ? 'checked' : '' ?>>
-                    <label for="versicherung">Versicherung abschließen</label>
+                    <label for="versicherung">Versicherung abschließen (+ <?= euro(VERSICHERUNG_PREIS) ?> je Fahrrad)</label>
                 </div>
                 <p class="hinweis">Die Kaution wird je Fahrrad aus der Preisgruppe übernommen (siehe Spalte „Kaution“) und bei Rückgabe erstattet.</p>
             </fieldset>
