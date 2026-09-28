@@ -1,29 +1,30 @@
 <?php
 /**
- * verleih.php  –  Teil B: Arbeitsprozess "Neuer Kunde leiht Fahrräder"
+ * verleih.php  –  Teil B: Arbeitsprozess "Kunde leiht Fahrräder"
  *
  * Ablauf:
+ *   0. Kunde ist angemeldet (login.php), neue Kunden registrieren sich (registrieren.php)
  *   1. Zeitraum wählen (vorbelegt: 30.10.2025 – 02.11.2025)
  *   2. Verfügbare Fahrräder werden ermittelt (keine überlappende Ausleihe)
- *   3. Neuen Kunden erfassen, ein oder mehrere Fahrräder + optional Zubehör wählen
+ *   3. Ein oder mehrere Fahrräder + optional Zubehör wählen
  *      (Kaution je Rad ergibt sich automatisch aus der Preisgruppe)
  *   4. Buchung in einer Transaktion speichern:
- *        INSERT Kunde  ->  je Fahrrad INSERT Ausleihe  ->  INSERT Ausleihe_Zubehoer
+ *        je Fahrrad INSERT Ausleihe  ->  INSERT Ausleihe_Zubehoer
  *   5. Bestätigung mit Preisberechnung anzeigen
  */
-require 'config.php';
+require 'auth.php';
+loginErforderlich();
 
 mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT); // Fehler als Exception (fuer Rollback)
 $mysqli = new mysqli(DB_HOST, DB_USER, DB_PASS, DB_NAME);
-if ($mysqli->connect_error) {
-    die('Verbindung fehlgeschlagen: ' . $mysqli->connect_error);
-}
 $mysqli->set_charset('utf8mb4');
 
-function h(?string $s): string
-{
-    return htmlspecialchars($s ?? '', ENT_QUOTES, 'UTF-8');
+$kunde = kundeLaden($mysqli);
+if ($kunde === null) {              // Session zeigt auf gelöschten Kunden
+    header('Location: logout.php');
+    exit;
 }
+$kundennummer = (int)$kunde['Kundennummer'];
 
 function euro(float $betrag): string
 {
@@ -86,21 +87,6 @@ $zubehoer = $mysqli->query('SELECT ZubehoerNr, Bezeichnung, Preis FROM Ihsan_Son
 $buchung = null;   // wird bei Erfolg gefüllt und unten als Bestätigung angezeigt
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && !$fehler) {
-    $kunde = [
-        'Anrede'   => trim($_POST['anrede']   ?? ''),
-        'Nachname' => trim($_POST['nachname'] ?? ''),
-        'Vorname'  => trim($_POST['vorname']  ?? ''),
-        'Strasse'  => trim($_POST['strasse']  ?? ''),
-        'PLZ'      => trim($_POST['plz']      ?? ''),
-        'Ort'      => trim($_POST['ort']      ?? ''),
-        'Telefon'  => trim($_POST['telefon']  ?? ''),
-    ];
-    foreach (['Anrede', 'Nachname', 'Vorname', 'Strasse', 'PLZ', 'Ort'] as $feld) {
-        if ($kunde[$feld] === '') {
-            $fehler[] = "Bitte das Feld „{$feld}“ ausfüllen.";
-        }
-    }
-
     $gewaehlteRaeder = array_map('intval', $_POST['fahrrad'] ?? []);
     $gewaehlteRaeder = array_values(array_unique($gewaehlteRaeder));
     if (count($gewaehlteRaeder) < 1) {
@@ -118,22 +104,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !$fehler) {
     $versicherung = isset($_POST['versicherung']) ? 1 : 0;
 
     if (!$fehler) {
-        // Alles oder nichts: Kunde + alle Ausleihen + Zubehör in einer Transaktion
+        // Alles oder nichts: alle Ausleihen + Zubehör in einer Transaktion
         $mysqli->begin_transaction();
         try {
-            // 4a) Neuen Kunden anlegen
-            $stmt = $mysqli->prepare(
-                'INSERT INTO Ihsan_Kunde (Anrede, Nachname, Vorname, Strasse, PLZ, Ort, Telefon)
-                 VALUES (?, ?, ?, ?, ?, ?, ?)'
-            );
-            $telefon = $kunde['Telefon'] !== '' ? $kunde['Telefon'] : null;
-            $stmt->bind_param('sssssss', $kunde['Anrede'], $kunde['Nachname'], $kunde['Vorname'],
-                              $kunde['Strasse'], $kunde['PLZ'], $kunde['Ort'], $telefon);
-            $stmt->execute();
-            $kundennummer = $mysqli->insert_id;
-            $stmt->close();
-
-            // 4b) Pro Fahrrad eine Ausleihe; die Kaution ergibt sich aus der Preisgruppe des Rads
+            // 4a) Pro Fahrrad eine Ausleihe; die Kaution ergibt sich aus der Preisgruppe des Rads
             $ausleihNrn = [];
             $stmt = $mysqli->prepare(
                 'INSERT INTO Ihsan_Ausleihe (Kundennummer, Fahrradnummer, Ausleihdatum, Rueckgabedatum, Versicherung, Kaution)
@@ -147,7 +121,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !$fehler) {
             }
             $stmt->close();
 
-            // 4c) Sonderzubehör: hängt nicht am Rad, wird der ersten Ausleihe des Vorgangs zugeordnet
+            // 4b) Sonderzubehör: hängt nicht am Rad, wird der ersten Ausleihe des Vorgangs zugeordnet
             if ($gewaehltesZubehoer) {
                 $ersteAusleihe = reset($ausleihNrn);
                 $stmt = $mysqli->prepare(
@@ -230,7 +204,7 @@ $mysqli->close();
     </style>
 </head>
 <body>
-    <nav><a href="index.php">Fahrräder nach Modell</a><a href="verleih.php">Neue Ausleihe</a></nav>
+    <?= navigation($kunde) ?>
     <h1>Neue Ausleihe</h1>
 
     <?php if ($fehler): ?>
@@ -285,24 +259,10 @@ $mysqli->close();
             <input type="hidden" name="bis" value="<?= h($bis) ?>">
 
             <fieldset>
-                <legend>2. Neuer Kunde</legend>
-                <div class="zeile"><label class="feld" for="anrede">Anrede</label>
-                    <select name="anrede" id="anrede">
-                        <?php foreach (['Frau', 'Herr', 'Divers'] as $a): ?>
-                            <option <?= ($_POST['anrede'] ?? '') === $a ? 'selected' : '' ?>><?= $a ?></option>
-                        <?php endforeach; ?>
-                    </select></div>
-                <div class="zeile"><label class="feld" for="vorname">Vorname</label>
-                    <input id="vorname" name="vorname" value="<?= h($_POST['vorname'] ?? '') ?>" required></div>
-                <div class="zeile"><label class="feld" for="nachname">Nachname</label>
-                    <input id="nachname" name="nachname" value="<?= h($_POST['nachname'] ?? '') ?>" required></div>
-                <div class="zeile"><label class="feld" for="strasse">Straße</label>
-                    <input id="strasse" name="strasse" value="<?= h($_POST['strasse'] ?? '') ?>" required></div>
-                <div class="zeile"><label class="feld" for="plz">PLZ / Ort</label>
-                    <input id="plz" name="plz" size="6" value="<?= h($_POST['plz'] ?? '') ?>" required>
-                    <input id="ort" name="ort" value="<?= h($_POST['ort'] ?? '') ?>" required></div>
-                <div class="zeile"><label class="feld" for="telefon">Telefon</label>
-                    <input id="telefon" name="telefon" value="<?= h($_POST['telefon'] ?? '') ?>"></div>
+                <legend>2. Kunde</legend>
+                <p><?= h($kunde['Anrede']) ?> <?= h($kunde['Vorname']) ?> <?= h($kunde['Nachname']) ?>,
+                   <?= h($kunde['Strasse']) ?>, <?= h($kunde['PLZ']) ?> <?= h($kunde['Ort']) ?>
+                   (Kundennummer <?= $kundennummer ?>)</p>
             </fieldset>
 
             <fieldset>

@@ -1,5 +1,5 @@
 <?php
-require 'config.php';
+require 'auth.php';   // Session + h() + navigation()
 
 $mysqli = new mysqli(DB_HOST, DB_USER, DB_PASS, DB_NAME);
 if ($mysqli->connect_error) {
@@ -36,12 +36,8 @@ if ($gewaehlt !== '') {
     $stmt->close();
 }
 
+$kunde = kundeLaden($mysqli);
 $mysqli->close();
-
-function h(?string $s): string
-{
-    return htmlspecialchars($s ?? '', ENT_QUOTES, 'UTF-8');
-}
 ?>
 <!DOCTYPE html>
 <html lang="de">
@@ -59,7 +55,7 @@ function h(?string $s): string
     </style>
 </head>
 <body>
-    <nav><a href="index.php">Fahrräder nach Modell</a> | <a href="verleih.php">Neue Ausleihe</a></nav>
+    <?= navigation($kunde) ?>
     <h1>Fahrräder nach Modell</h1>
 
     <form method="get">

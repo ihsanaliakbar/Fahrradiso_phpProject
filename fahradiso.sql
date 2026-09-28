@@ -23,6 +23,7 @@ SET FOREIGN_KEY_CHECKS = 1;
 -- Verleih
 -- ---------------------------------------------------------------------
 
+-- Email + Passwort (Hash) fuer Login / Registrierung der Kunden
 CREATE TABLE Ihsan_Kunde (
     Kundennummer   INT UNSIGNED     NOT NULL AUTO_INCREMENT,
     Anrede         VARCHAR(10)      NOT NULL,
@@ -32,7 +33,10 @@ CREATE TABLE Ihsan_Kunde (
     PLZ            VARCHAR(10)      NOT NULL,
     Ort            VARCHAR(50)      NOT NULL,
     Telefon        VARCHAR(30),
-    PRIMARY KEY (Kundennummer)
+    Email          VARCHAR(100)     NOT NULL,
+    Passwort       VARCHAR(255)     NOT NULL,
+    PRIMARY KEY (Kundennummer),
+    UNIQUE (Email)
 );
 
 -- Kaution: fester Betrag je Preisgruppe, wird bei der Ausleihe je Rad hinterlegt

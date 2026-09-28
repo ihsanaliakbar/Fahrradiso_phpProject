@@ -20,10 +20,11 @@ INSERT INTO Ihsan_Fahrrad (Art, Hersteller, Modell, Rahmengroesse, Anschaffungsp
     ('Citybike',     'Gazelle',        'Esprit',     'S',  599.00, '2021-08-11', '2024-11-30', 4),
     ('Rennrad',      'Canyon',         'Endurace 7', 'M', 1899.00, '2023-06-05', '2025-02-14', 2);
 
-INSERT INTO Ihsan_Kunde (Anrede, Nachname, Vorname, Strasse, PLZ, Ort, Telefon) VALUES
-    ('Frau', 'Schneider', 'Anna',   'Lindenstraße 12', '54290', 'Trier', '0651 123456'),
-    ('Herr', 'Weber',     'Lukas',  'Am Markt 3',      '54292', 'Trier', '0170 9876543'),
-    ('Frau', 'Hoffmann',  'Miriam', 'Moselufer 45',    '54294', 'Trier', NULL);
+-- Passwort aller Beispielkunden: test1234 (bcrypt-Hash aus password_hash())
+INSERT INTO Ihsan_Kunde (Anrede, Nachname, Vorname, Strasse, PLZ, Ort, Telefon, Email, Passwort) VALUES
+    ('Frau', 'Schneider', 'Anna',   'Lindenstraße 12', '54290', 'Trier', '0651 123456',  'anna.schneider@example.de', '$2y$10$sHzlNCpE40B6Qer/ORdQBecMOZv1XuINYhcQcUbOCGbXuZEbxfIOK'),
+    ('Herr', 'Weber',     'Lukas',  'Am Markt 3',      '54292', 'Trier', '0170 9876543', 'lukas.weber@example.de',    '$2y$10$sHzlNCpE40B6Qer/ORdQBecMOZv1XuINYhcQcUbOCGbXuZEbxfIOK'),
+    ('Frau', 'Hoffmann',  'Miriam', 'Moselufer 45',    '54294', 'Trier', NULL,           'miriam.hoffmann@example.de','$2y$10$sHzlNCpE40B6Qer/ORdQBecMOZv1XuINYhcQcUbOCGbXuZEbxfIOK');
 
 INSERT INTO Ihsan_Sonderzubehoer (Bezeichnung, Preis) VALUES
     ('Helm',             3.00),
