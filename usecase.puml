@@ -1,5 +1,5 @@
 @startuml usecase
-' Use-Case-Diagramm Fahrradverleih Fahradiso: Fahrräder ausleihen (Teil B)
+' Use-Case-Diagramm Fahrradverleih Fahradiso: Fahrräder ausleihen (Teil B) mit Login
 skinparam packageStyle rectangle
 skinparam actorStyle awesome
 skinparam usecase {
@@ -8,9 +8,11 @@ skinparam usecase {
 }
 
 rectangle "Fahrradverleih Fahradiso" {
+    usecase "Registrieren" as UC7
+    usecase "Anmelden" as UC8
+
     usecase "Versicherung\nabschließen" as UC6
     usecase "Sonderzubehör\nmitmieten" as UC5
-    usecase "Neuen Kunden\nanlegen" as UC4
 
     usecase "Fahrräder ausleihen" as UC1
 
@@ -20,15 +22,20 @@ rectangle "Fahrradverleih Fahradiso" {
 
 actor "Kunde" as kunde
 
-' Akteur (Linie ohne Pfeilspitze)
-UC1 -right- kunde
+' Akteur (Linien ohne Pfeilspitze)
+kunde -left- UC1
+kunde -left- UC8
+kunde -left- UC7
 
-' Optionale Erweiterungen oberhalb
+' Anmeldung ist Voraussetzung, Registrierung nur bei fehlendem Konto
+UC1 .up.> UC8 : <<include>>
+UC7 .right.> UC8 : <<extend>>
+
+' Optionale Erweiterungen
 UC6 .down.> UC1 : <<extend>>
 UC5 .down.> UC1 : <<extend>>
-UC4 .down.> UC1 : <<extend>>
 
-' Pflichtbestandteile unterhalb
+' Pflichtbestandteile
 UC1 .down.> UC2 : <<include>>
 UC1 .down.> UC3 : <<include>>
 
