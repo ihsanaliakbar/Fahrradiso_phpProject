@@ -7,8 +7,6 @@ skinparam usecase {
     BorderColor #555555
 }
 
-actor "Mitarbeiter" as ma
-
 rectangle "Fahrradverleih Fahradiso" {
     usecase "Versicherung\nabschließen" as UC6
     usecase "Sonderzubehör\nmitmieten" as UC5
@@ -22,8 +20,7 @@ rectangle "Fahrradverleih Fahradiso" {
 
 actor "Kunde" as kunde
 
-' Akteure links und rechts (Linien ohne Pfeilspitze)
-ma -right- UC1
+' Akteur (Linie ohne Pfeilspitze)
 UC1 -right- kunde
 
 ' Optionale Erweiterungen oberhalb
