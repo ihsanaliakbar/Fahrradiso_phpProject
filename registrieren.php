@@ -78,7 +78,7 @@ $mysqli->close();
     <meta charset="UTF-8">
     <title>Fahrradverleih – Registrieren</title>
     <style>
-        body { font-family: Arial, sans-serif; margin: 2rem; max-width: 30rem; }
+        body { font-family: Arial, sans-serif; margin: 4.5rem 2rem 2rem; max-width: 30rem; }
         nav a { margin: 0 .3rem; }
         label { display: block; margin-top: .8rem; }
         input, select { width: 100%; padding: .4rem; box-sizing: border-box; }

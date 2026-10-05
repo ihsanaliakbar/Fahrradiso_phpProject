@@ -55,7 +55,9 @@ function navigation(?array $kunde): string
     } else {
         $rechts = '<a href="login.php">Anmelden</a> | <a href="registrieren.php">Registrieren</a>';
     }
-    return '<nav style="display:flex;justify-content:space-between;align-items:center;'
-         . 'padding:.5rem 0;border-bottom:1px solid #ccc;margin-bottom:1rem">'
+    // Leiste über die volle Bildschirmbreite am oberen Rand; die Seiten lassen oben Platz (body margin-top)
+    return '<nav style="position:absolute;top:0;left:0;right:0;display:flex;justify-content:space-between;'
+         . 'align-items:center;padding:.6rem 2rem;background:#eee;border-bottom:1px solid #ccc;'
+         . 'font-family:Arial,sans-serif;box-sizing:border-box">'
          . '<span>' . $links . '</span><span>' . $rechts . '</span></nav>';
 }

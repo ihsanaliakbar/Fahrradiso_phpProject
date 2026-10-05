@@ -45,7 +45,7 @@ $mysqli->close();
     <meta charset="UTF-8">
     <title>Fahrradverleih – Fahrräder nach Modell</title>
     <style>
-        body { font-family: Arial, sans-serif; margin: 2rem; }
+        body { font-family: Arial, sans-serif; margin: 4.5rem 2rem 2rem; }
         label { margin-right: .5rem; }
         select { padding: .3rem; }
         table { border-collapse: collapse; margin-top: 1.5rem; }

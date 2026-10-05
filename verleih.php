@@ -200,7 +200,7 @@ $mysqli->close();
     <meta charset="UTF-8">
     <title>Fahrradverleih – Neue Ausleihe</title>
     <style>
-        body { font-family: Arial, sans-serif; margin: 2rem; max-width: 60rem; }
+        body { font-family: Arial, sans-serif; margin: 4.5rem 2rem 2rem; max-width: 60rem; }
         nav a { margin-right: 1rem; }
         fieldset { margin-bottom: 1.5rem; }
         legend { font-weight: bold; }
