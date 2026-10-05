@@ -45,15 +45,17 @@ function h(?string $s): string
     return htmlspecialchars($s ?? '', ENT_QUOTES, 'UTF-8');
 }
 
-/** Navigationsleiste, je nach Login-Status. */
+/** Navigationsleiste: Links oben links, Kunde bzw. Login-Links oben rechts. */
 function navigation(?array $kunde): string
 {
-    $html = '<nav><a href="index.php">Fahrräder nach Modell</a> | <a href="verleih.php">Neue Ausleihe</a>';
+    $links = '<a href="index.php">Fahrräder nach Modell</a> | <a href="verleih.php">Neue Ausleihe</a>';
     if ($kunde) {
-        $html .= ' | <span class="user">Angemeldet als ' . h($kunde['Vorname'] . ' ' . $kunde['Nachname'])
-               . '</span> | <a href="logout.php">Abmelden</a>';
+        $rechts = '<strong>' . h($kunde['Vorname'] . ' ' . $kunde['Nachname']) . '</strong>'
+                . ' | <a href="logout.php">Abmelden</a>';
     } else {
-        $html .= ' | <a href="login.php">Anmelden</a> | <a href="registrieren.php">Registrieren</a>';
+        $rechts = '<a href="login.php">Anmelden</a> | <a href="registrieren.php">Registrieren</a>';
     }
-    return $html . '</nav>';
+    return '<nav style="display:flex;justify-content:space-between;align-items:center;'
+         . 'padding:.5rem 0;border-bottom:1px solid #ccc;margin-bottom:1rem">'
+         . '<span>' . $links . '</span><span>' . $rechts . '</span></nav>';
 }

@@ -271,14 +271,7 @@ $mysqli->close();
             <input type="hidden" name="bis" value="<?= h($bis) ?>">
 
             <fieldset>
-                <legend>2. Kunde</legend>
-                <p><?= h($kunde['Anrede']) ?> <?= h($kunde['Vorname']) ?> <?= h($kunde['Nachname']) ?>,
-                   <?= h($kunde['Strasse']) ?>, <?= h($kunde['PLZ']) ?> <?= h($kunde['Ort']) ?>
-                   (Kundennummer <?= $kundennummer ?>)</p>
-            </fieldset>
-
-            <fieldset>
-                <legend>3. Fahrräder (mindestens eins auswählen)</legend>
+                <legend>2. Fahrräder (mindestens eins auswählen)</legend>
                 <?php if (!$verfuegbar): ?>
                     <p>Im Zeitraum <?= datumDe($von) ?> bis <?= datumDe($bis) ?> ist kein Fahrrad frei.</p>
                 <?php else: ?>
@@ -307,7 +300,7 @@ $mysqli->close();
             </fieldset>
 
             <fieldset>
-                <legend>4. Sonderzubehör (optional)</legend>
+                <legend>3. Sonderzubehör (optional)</legend>
                 <?php foreach ($zubehoer as $z): ?>
                     <?php $znr = (int)$z['ZubehoerNr']; ?>
                     <div class="zeile">
@@ -319,7 +312,7 @@ $mysqli->close();
             </fieldset>
 
             <fieldset>
-                <legend>5. Versicherung</legend>
+                <legend>4. Versicherung</legend>
                 <div class="zeile">
                     <input type="checkbox" name="versicherung" id="versicherung" <?= isset($_POST['versicherung']) ? 'checked' : '' ?>>
                     <label for="versicherung">Versicherung abschließen (+ <?= euro(VERSICHERUNG_PREIS) ?> je Fahrrad)</label>
